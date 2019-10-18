@@ -11,7 +11,7 @@ enum ControllerButton {
  * Blocks to build custom arcade controller
  */
 //% color=0xe95153 icon="\uf11b"
-namespace makercontroler {
+namespace makerController {
     const NBUTTONS = 6;
     /**
      * A MakeCode Arcade controller
