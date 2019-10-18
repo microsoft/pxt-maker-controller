@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "description": "",
     "dependencies": {
-        "circuit-playground": "*"
+        "circuit-playground": "*",
+        "keyboard": "*"
     },
     "files": [
         "README.md",
@@ -12,5 +13,6 @@
     "testFiles": [
         "test.ts"
     ],
-    "public": false
+    "public": false,
+    "preferredEditor": "tsprj"
 }
