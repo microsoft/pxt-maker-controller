@@ -37,14 +37,9 @@ namespace makerController {
         //% blockId=makercontrollerpress block="press %this button %button"
         press(button: ControllerButton) {
             button = button & 0xff;
-            // clear downs
-            this.downs = ~(~this.downs | button);
-            // send press commands
-            for (let i = 0; i < NBUTTONS; ++i) {
-                const ci = 1 << i;
-                if (button & ci)
-                    keyboard.type(this.keys[i]);
-            }
+            this.setButtonDown(button, true);
+            pause(5);
+            this.setButtonDown(button, false);
         }
 
         /**
