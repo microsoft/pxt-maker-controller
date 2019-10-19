@@ -43,7 +43,7 @@ namespace makerController {
             for (let i = 0; i < NBUTTONS; ++i) {
                 const ci = 1 << i;
                 if (button & ci)
-                    keyboard.key(this.keys[i], KeyboardKeyEvent.Press)
+                    keyboard.type(this.keys[i]);
             }
         }
 
