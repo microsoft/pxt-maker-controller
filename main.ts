@@ -95,11 +95,11 @@ namespace makerController {
      * Player 1 keys
      */
     //% fixedInstance whenUsed block="player 1"
-    export const player1 = new Player("EQAWDS");
+    export const player1 = new Player("qeawds");
 
     /**
      * Player 2 keys
      */
     //% fixedInstance whenUsed block="player 2"
-    export const player2 = new Player("OUJILK");
+    export const player2 = new Player("uojilk");
 }
