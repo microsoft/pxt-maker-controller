@@ -1,4 +1,4 @@
-enum ControllerButton {
+enum ArcadeButton {
     //% block="A"
     A = 0x01,
     //% block="B"
@@ -41,14 +41,14 @@ namespace makerController {
             this.downs = 0;
         }
 
-        private static normalizeButtons(button: ControllerButton, down: boolean) {
+        private static normalizeButtons(button: number, down: boolean) {
             button = button & 0xff;
             // left/right cancel each other
-            const leftRight = ControllerButton.Left | ControllerButton.Right;
+            const leftRight = ArcadeButton.Left | ArcadeButton.Right;
             if (down && (button & leftRight) == leftRight)
                 button = ~(~button | leftRight);
             // up/down cancel each other
-            const upDown = ControllerButton.Left | ControllerButton.Right;
+            const upDown = ArcadeButton.Up | ArcadeButton.Down;
             if (down && (button & upDown) == upDown)
                 button = ~(~button | upDown);
             return button;
@@ -57,21 +57,21 @@ namespace makerController {
         /**
          * Simulate that the button has been pressed
          */
-        //% blockId=makercontrollerpress block="press %this button %button"
-        press(button: ControllerButton) {
-            button = Player.normalizeButtons(button, true);
-            this.setButtonDown(button, true);
+        //% blockId=makercontrollerpress block="press %this button %buttons"
+        press(buttons: ArcadeButton) {
+            this.setButtonDown(buttons, true);
             pause(5);
-            this.setButtonDown(button, false);
+            this.setButtonDown(buttons, false);
         }
 
         /**
          * Sets a button state to down or up
          */
-        //% blockId=makercontrollerkey block="set %this button %button to %down=toggleDownUp"
+        //% blockId=makercontrollersetButtonDown block="set %this button %buttons to %down=toggleDownUp"
         //% down.defl=true
-        setButtonDown(button: ControllerButton, down: boolean) {
-            button = Player.normalizeButtons(button, down);
+        setButtonDown(buttons: ArcadeButton, down: boolean) {
+            const button = Player.normalizeButtons(buttons, down);
+            if (!button) return; // nothing to do
             if (down) {
                 // send up commands
                 const cup = button & ~this.downs;
