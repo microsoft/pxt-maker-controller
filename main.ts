@@ -23,11 +23,15 @@ enum ArcadeButton {
     LeftDown = 0x24
 }
 
-enum ArcadeDpadDirection {
+enum ArcadeAnalogButton {
     //% block="←→ left/right"
     LeftRight,
     //% block="↓↑ down/up"
-    DownUp
+    DownUp,
+    //% block="A"
+    A,
+    //% block="B"
+    B
 }
 
 /**
@@ -46,6 +50,8 @@ namespace makerController {
         private downs: number;
         private _hpad: pins.LevelDetector;
         private _vpad: pins.LevelDetector;
+        private _apad: pins.LevelDetector;
+        private _bpad: pins.LevelDetector;
 
         constructor(public keys: string) {
             this.downs = 0;
@@ -71,6 +77,28 @@ namespace makerController {
                 this._vpad.onNeutral = () => this.setButton(ArcadeButton.Up | ArcadeButton.Down, false)
             }
             return this._vpad;
+        }
+
+        get apad(): pins.LevelDetector {
+            if (!this._apad) {
+                this._apad = new pins.LevelDetector(control.allocateNotifyEvent(), -Infinity, Infinity, 0, 128);
+                this._apad.transitionWindow = 0;
+                this._apad.onHigh = () => this.setButton(ArcadeButton.A, true);
+                this._apad.onLow = undefined;
+                this._apad.onNeutral = () => this.setButton(ArcadeButton.A, false)
+            }
+            return this._apad;
+        }
+
+        get bpad(): pins.LevelDetector {
+            if (!this._bpad) {
+                this._bpad = new pins.LevelDetector(control.allocateNotifyEvent(), -Infinity, Infinity, 0, 128);
+                this._bpad.transitionWindow = 0;
+                this._bpad.onHigh = () => this.setButton(ArcadeButton.B, true);
+                this._bpad.onLow = undefined;
+                this._bpad.onNeutral = () => this.setButton(ArcadeButton.B, false)
+            }
+            return this._apad;
         }
 
         private static normalizeButtons(button: number, down: boolean) {
@@ -127,13 +155,25 @@ namespace makerController {
             }
         }
 
+        private resolveDetector(direction: ArcadeAnalogButton) {
+            let ld: pins.LevelDetector;
+            switch (direction) {
+                case ArcadeAnalogButton.LeftRight: ld = this.hpad; break;
+                case ArcadeAnalogButton.DownUp: ld = this.vpad; break;
+                case ArcadeAnalogButton.A: ld = this.apad; break;
+                case ArcadeAnalogButton.B: ld = this.bpad; break;
+            }
+            return ld;
+        }
+
         /**
          * Converts an analog input to DPad keystrokes
          */
         //% blockId=makercontrolleranalogdpaddir block="set %this analog %direction to %value"
-        setAnalogDpad(direction: ArcadeDpadDirection, value: number) {
-            const ld = (direction == ArcadeDpadDirection.LeftRight) ? this.hpad : this.vpad;
-            ld.level = value;
+        setAnalog(direction: ArcadeAnalogButton, value: number) {
+            const ld = this.resolveDetector(direction);
+            if (ld)
+                ld.level = value;
         }
 
         /**
@@ -142,8 +182,8 @@ namespace makerController {
         //% blockId=makercontrolleranalogsetthreshold block="set %this analog %direction threshold from %low to %high"
         //% low.defl=-1023
         //% high.defl=1023
-        setAnalogDpadThreshold(direction: ArcadeDpadDirection, low: number, high: number) {
-            const ld = (direction == ArcadeDpadDirection.LeftRight) ? this.hpad : this.vpad;
+        setAnalogThreshold(direction: ArcadeAnalogButton, low: number, high: number) {
+            const ld = this.resolveDetector(direction);
             ld.setLowThreshold(low);
             ld.setHighThreshold(high);
         }
