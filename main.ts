@@ -126,6 +126,7 @@ namespace makerController {
 
         /**
          * Sets a button state to down or up
+         * @param down true if button is down, false if up
          */
         //% blockId=makercontrollersetButtonDown block="set %this button %buttons to %down=toggleDownUp"
         //% down.defl=true
