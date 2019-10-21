@@ -3,6 +3,8 @@ enum ControllerButton {
     A = 0x01,
     //% block="B"
     B = 0x02,
+    //% block="A+B"
+    AB = 0x03,
     //% block="← left"
     Left = 0x04,
     //% block="←↑ left+up"
