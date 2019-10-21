@@ -37,7 +37,7 @@ enum ArcadeAnalogButton {
 /**
  * Blocks to build custom arcade controller
  */
-//% color=0xe95153 icon="\uf11b"
+//% color=#e95153 icon="\uf11b"
 //% weight=80
 //% blockNamespace="Maker Controller"
 namespace makerController {
