@@ -23,6 +23,13 @@ enum ArcadeButton {
     LeftDown = 0x24
 }
 
+enum ArcadeDpadDirection {
+    //% block="←→ left/right"
+    LeftRight,
+    //% block="↓↑ down/up"
+    DownUp
+}
+
 /**
  * Blocks to build custom arcade controller
  */
@@ -37,8 +44,33 @@ namespace makerController {
     //% fixedInstances
     export class Player {
         private downs: number;
+        private _hpad: pins.LevelDetector;
+        private _vpad: pins.LevelDetector;
+
         constructor(public keys: string) {
             this.downs = 0;
+        }
+
+        get hpad(): pins.LevelDetector {
+            if (!this._hpad) {
+                this._hpad = new pins.LevelDetector(control.allocateNotifyEvent(), -1023, 1023, -250, 250);
+                this._hpad.transitionWindow = 0;
+                this._hpad.onHigh = () => this.setButton(ArcadeButton.Right, true);
+                this._hpad.onLow = () => this.setButton(ArcadeButton.Left, true);
+                this._hpad.onNeutral = () => this.setButton(ArcadeButton.Left | ArcadeButton.Right, false)
+            }
+            return this._hpad;
+        }
+
+        get vpad(): pins.LevelDetector {
+            if(!this._vpad) {
+                this._vpad = new pins.LevelDetector(control.allocateNotifyEvent(), -1023, 1023, -250, 250);
+                this._vpad.transitionWindow = 0;
+                this._vpad.onHigh = () => this.setButton(ArcadeButton.Up, true);
+                this._vpad.onLow = () => this.setButton(ArcadeButton.Down, true)
+                this._vpad.onNeutral = () => this.setButton(ArcadeButton.Up | ArcadeButton.Down, false)                
+            }
+            return this._vpad;
         }
 
         private static normalizeButtons(button: number, down: boolean) {
@@ -59,9 +91,9 @@ namespace makerController {
          */
         //% blockId=makercontrollerpress block="press %this button %buttons"
         press(buttons: ArcadeButton) {
-            this.setButtonDown(buttons, true);
+            this.setButton(buttons, true);
             pause(5);
-            this.setButtonDown(buttons, false);
+            this.setButton(buttons, false);
         }
 
         /**
@@ -69,7 +101,7 @@ namespace makerController {
          */
         //% blockId=makercontrollersetButtonDown block="set %this button %buttons to %down=toggleDownUp"
         //% down.defl=true
-        setButtonDown(buttons: ArcadeButton, down: boolean) {
+        setButton(buttons: ArcadeButton, down: boolean) {
             const button = Player.normalizeButtons(buttons, down);
             if (!button) return; // nothing to do
             if (down) {
@@ -93,6 +125,17 @@ namespace makerController {
                 // clear state
                 this.downs = ~(~this.downs | button);
             }
+        }
+
+        /**
+         * Converts an analog input to DPad keystrokes
+         */
+        //% blockId=makercontrolleranalogdpaddir block="set %this analog %direction to %value"
+        setAnalogDpad(direction: ArcadeDpadDirection, value: number) {
+            if (direction == ArcadeDpadDirection.LeftRight)
+                this.hpad.level = value;
+            else
+                this.vpad.level = value;
         }
 
         /**
