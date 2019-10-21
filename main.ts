@@ -204,6 +204,10 @@ namespace makerController {
                 this._hpad.reset();
             if (this._vpad)
                 this._vpad.reset();
+            if (this._apad)
+                this._apad.reset();
+            if (this._bpad)
+                this._bpad.reset();
         }
     }
 
