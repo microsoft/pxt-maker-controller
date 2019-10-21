@@ -3,14 +3,22 @@ enum ControllerButton {
     A = 0x01,
     //% block="B"
     B = 0x02,
-    //% block="left"
-    Left = 0x4,
-    //% block="up"
+    //% block="← left"
+    Left = 0x04,
+    //% block="←↑ left+up"
+    LeftUp = 0x0c,
+    //% block="↑ up"
     Up = 0x08,
-    //% block="right"
+    //% block="↑→ right+up"
+    RightUp = 0x18,
+    //% block="→ right"
     Right = 0x10,
-    //% block="down"
-    Down = 0x20
+    //% block="→↓ right+down"
+    RightDown = 0x30,
+    //% block="↓ down"
+    Down = 0x20,
+    //% block="←↓ left+down"
+    LeftDown = 0x24
 }
 
 /**
@@ -40,7 +48,7 @@ namespace makerController {
             // up/down cancel each other
             const upDown = ControllerButton.Left | ControllerButton.Right;
             if (down && (button & upDown) == upDown)
-                button = ~(~button | upDown);            
+                button = ~(~button | upDown);
             return button;
         }
 
