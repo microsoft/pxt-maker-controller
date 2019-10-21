@@ -11,7 +11,8 @@
     },
     "files": [
         "README.md",
-        "main.ts"
+        "main.ts",
+        "controller.ts"
     ],
     "testFiles": [
         "test.ts"
