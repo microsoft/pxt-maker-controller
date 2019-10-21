@@ -98,7 +98,7 @@ namespace makerController {
                 this._bpad.onLow = undefined;
                 this._bpad.onNeutral = () => this.setButton(ArcadeButton.B, false)
             }
-            return this._apad;
+            return this._bpad;
         }
 
         private static normalizeButtons(button: number, down: boolean) {
@@ -184,8 +184,10 @@ namespace makerController {
         //% high.defl=1023
         setAnalogThreshold(direction: ArcadeAnalogButton, low: number, high: number) {
             const ld = this.resolveDetector(direction);
-            ld.setLowThreshold(low);
-            ld.setHighThreshold(high);
+            if (ld) {
+                ld.setLowThreshold(low);
+                ld.setHighThreshold(high);
+            }
         }
 
         /**
