@@ -10,12 +10,12 @@ that emulate one or more players.
 
 This repository contains a MakeCode extension. To use it in MakeCode,
 
-* open https://makecode.adafruit.com/
+* open https://makecode.adafruit.com/beta
 * click on **New Project**
 * click on **Extensions** under the gearwheel menu
 * search for the URL of this repository
 
-## Example
+## Button press
 
 Simulate a button press when a button in pressed on your device.
 
@@ -24,6 +24,8 @@ input.buttonA.onEvent(ButtonEvent.Click, function () {
     makerController.player1.press(ControllerButton.A)
 })
 ```
+
+## Up, down states
 
 Simulate buttons left and right pressed based on the accelerometer readings.
 
@@ -41,6 +43,31 @@ forever(function () {
         makerController.player1.reset()
     }
 })
+```
+
+## Analog buttons
+
+Map analog sensors to dpad buttons.
+
+```blocks
+forever(function () {
+    makerController.player1.setAnalog(ArcadeAnalogButton.LeftRight, input.acceleration(Dimension.X))
+    makerController.player1.setAnalog(ArcadeAnalogButton.DownUp, input.acceleration(Dimension.Y))
+})
+```
+
+Also map analog sensors to A/B buttons.
+
+```blocks
+forever(function () {
+    makerController.player1.setAnalog(ArcadeAnalogButton.A, input.soundLevel())
+})
+```
+
+You can tune the threshold to detect that a button is pressed or not.
+
+```blocks
+makerController.player1.setAnalogThreshold(ArcadeAnalogButton.A, 0, 200)
 ```
 
 ## Collaborators
