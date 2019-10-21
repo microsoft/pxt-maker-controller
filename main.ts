@@ -53,7 +53,7 @@ namespace makerController {
 
         get hpad(): pins.LevelDetector {
             if (!this._hpad) {
-                this._hpad = new pins.LevelDetector(control.allocateNotifyEvent(), -1023, 1023, -250, 250);
+                this._hpad = new pins.LevelDetector(control.allocateNotifyEvent(), -Infinity, Infinity, -250, 250);
                 this._hpad.transitionWindow = 0;
                 this._hpad.onHigh = () => this.setButton(ArcadeButton.Right, true);
                 this._hpad.onLow = () => this.setButton(ArcadeButton.Left, true);
@@ -63,12 +63,12 @@ namespace makerController {
         }
 
         get vpad(): pins.LevelDetector {
-            if(!this._vpad) {
-                this._vpad = new pins.LevelDetector(control.allocateNotifyEvent(), -1023, 1023, -250, 250);
+            if (!this._vpad) {
+                this._vpad = new pins.LevelDetector(control.allocateNotifyEvent(), -Infinity, Infinity, -250, 250);
                 this._vpad.transitionWindow = 0;
                 this._vpad.onHigh = () => this.setButton(ArcadeButton.Up, true);
                 this._vpad.onLow = () => this.setButton(ArcadeButton.Down, true)
-                this._vpad.onNeutral = () => this.setButton(ArcadeButton.Up | ArcadeButton.Down, false)                
+                this._vpad.onNeutral = () => this.setButton(ArcadeButton.Up | ArcadeButton.Down, false)
             }
             return this._vpad;
         }
@@ -132,10 +132,20 @@ namespace makerController {
          */
         //% blockId=makercontrolleranalogdpaddir block="set %this analog %direction to %value"
         setAnalogDpad(direction: ArcadeDpadDirection, value: number) {
-            if (direction == ArcadeDpadDirection.LeftRight)
-                this.hpad.level = value;
-            else
-                this.vpad.level = value;
+            const ld = (direction == ArcadeDpadDirection.LeftRight) ? this.hpad : this.vpad;
+            ld.level = value;
+        }
+
+        /**
+         * Sets the threshold values for the analog dpad detector
+         */
+        //% blockId=makercontrolleranalogsetthreshold block="set %this analog %direction threshold from %low to %high"
+        //% low.defl=-1023
+        //% high.defl=1023
+        setAnalogDpadThreshold(direction: ArcadeDpadDirection, low: number, high: number) {
+            const ld = (direction == ArcadeDpadDirection.LeftRight) ? this.hpad : this.vpad;
+            ld.setLowThreshold(low);
+            ld.setHighThreshold(high);
         }
 
         /**
@@ -149,6 +159,11 @@ namespace makerController {
                     keyboard.key(this.keys[i], KeyboardKeyEvent.Up)
             }
             this.downs = 0;
+
+            if (this._hpad)
+                this._hpad.reset();
+            if (this._vpad)
+                this._vpad.reset();
         }
     }
 
