@@ -1,7 +1,7 @@
 # maker-controller
 
 The extension allows to easily create custom controllers for 
-MakeCode Arcade games (https://arcade.makecode.com) running the browser.
+MakeCode Arcade games (https://arcade.makecode.com) running in the browser.
 
 Under the hood, the extension uses the **keyboard** extension to generate keyboard key stroke
 that emulate one or more players.
